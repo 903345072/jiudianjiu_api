@@ -43,6 +43,6 @@ mybatis:
   mapper-locations: classpath:mapper/*Mapper.xml
   config-location: classpath:mapconfig/sqlMapConfig.xml
 wwyy:
-  appid: 164915
-  appSecret: 3f00cad83fc94c6cb5c0c8677c839b71
+  appid: 829216
+  appSecret: f431fec426404716942b0c2918931902
 widraw_fee: 3
