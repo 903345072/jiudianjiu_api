@@ -13,8 +13,8 @@ import org.springframework.web.client.RestTemplate;
 
 public class smsUtil {
     public static String sendSms(String phone,String code){
-          String username = "a406748653";
-          String pwd = "xt130414";
+          String username = "13486366636";
+          String pwd = "s123456";
 
         String httpUrl = "http://api.smsbao.com/sms";
         String Content = "【久点久】您的验证码为"+code+"，"+"在1分钟内有效。";
