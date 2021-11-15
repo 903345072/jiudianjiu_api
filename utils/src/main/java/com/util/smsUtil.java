@@ -17,7 +17,7 @@ public class smsUtil {
           String pwd = "s123456";
 
         String httpUrl = "http://api.smsbao.com/sms";
-        String Content = "【久点久】您的验证码为"+code+"，"+"在1分钟内有效。";
+        String Content = "【久点九】您的验证码为"+code+"，"+"在1分钟内有效。";
         StringBuffer httpArg = new StringBuffer();
         httpArg.append("u=").append(username).append("&");
         httpArg.append("p=").append(md5(pwd)).append("&");
