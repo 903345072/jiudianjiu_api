@@ -6,6 +6,7 @@
     <resultMap id="findOrderByHeYueId" type="com.stock.models.frontend.nettyOrder" >
         <id column="id" property="id"></id>
         <result column="member_heyue_id" property="member_heyue_id"></result>
+        <result column="member_id" property="member_id"></result>
         <result column="stock_status" property="stock_status"></result>
         <result column="buy_price" property="buy_price"></result>
         <result column="trade_price" property="trade_price"></result>

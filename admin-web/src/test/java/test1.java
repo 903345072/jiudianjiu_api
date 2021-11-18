@@ -10,6 +10,7 @@ import com.mapper.frontend.MemberHeYueApplyMapper;
 import com.mapper.frontend.OrderMapper;
 import com.stock.models.*;
 import com.stock.models.entity.order;
+import com.stock.models.frontend.Member;
 import com.stock.models.frontend.nettyOrder;
 import com.stock.service.*;
 
@@ -46,7 +47,10 @@ import java.util.stream.Collectors;
 @RunWith(SpringRunner.class)
 public class test1 {
 
-
+@Autowired
+MemberService memberServiceImpl;
+@Autowired
+UserService userService;
     @Autowired
     PermissionMapper permissionMapper;
 @Autowired
@@ -81,11 +85,21 @@ public class test1 {
 
     @Test
     public void queryData(){
-        String s1 = "sh500001";
-        System.out.println(s1.substring(2));
+        int member_id = 66;
+        Member member = memberServiceImpl.findMemberById(member_id);
+        User userInfo = userService.findUserInfo(member.getInvite_id());
+        BigDecimal sx_fee =  get_sx_fee(new BigDecimal(100),new BigDecimal(19.31),userInfo.getSx_rate());
+        System.out.println(sx_fee);
 
+    }
 
-
+    public BigDecimal get_sx_fee(BigDecimal hand,BigDecimal buy_price,BigDecimal rate){
+        BigDecimal rate_ = rate.divide(new BigDecimal(1000),5);
+        BigDecimal v = hand.multiply(buy_price).multiply(rate_);
+        if(v.doubleValue() < 5){
+            v = new BigDecimal(5);
+        }
+        return v;
     }
     @Test
     public void queryData1(){
