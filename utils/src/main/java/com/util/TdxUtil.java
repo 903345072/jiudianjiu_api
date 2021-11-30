@@ -22,7 +22,7 @@ public class TdxUtil {
 
     public static Map queryData(String type,String account ,String password,String tx_password,String ip,short port){
         RestTemplate restTemplate = new RestTemplate();
-        JSONObject forObject = restTemplate.getForObject("http://47.99.126.175:82/queryData/"+account+"/"+password+"/"+tx_password+"/"+ip+"/"+port+"/"+type, JSONObject.class);
+        JSONObject forObject = restTemplate.getForObject("http://47.104.24.188:82/queryData/"+account+"/"+password+"/"+tx_password+"/"+ip+"/"+port+"/"+type, JSONObject.class);
         return forObject;
     }
 
@@ -36,13 +36,13 @@ public class TdxUtil {
      */
     public static Map sendOrder(String stock_code,Integer hand,double price,int action,String account ,String password,String tx_password,String ip,short port,String gddm){
         RestTemplate restTemplate = new RestTemplate();
-        JSONObject forObject = restTemplate.getForObject("http://47.99.126.175:82/sendOrder/"+account+"/"+password+"/"+tx_password+"/"+ip+"/"+port+"/"+price+"/"+hand+"/"+action+"/"+stock_code+"/"+gddm, JSONObject.class);
+        JSONObject forObject = restTemplate.getForObject("http://47.104.24.188:82/sendOrder/"+account+"/"+password+"/"+tx_password+"/"+ip+"/"+port+"/"+price+"/"+hand+"/"+action+"/"+stock_code+"/"+gddm, JSONObject.class);
         return forObject;
     }
 
     public static   JSONObject  cancelOrder_(String stock_code,String orderID,String account ,String password,String tx_password,String ip,short port){
         RestTemplate restTemplate = new RestTemplate();
-        JSONObject forObject = restTemplate.getForObject("http://47.99.126.175:82/cancelOrder/"+stock_code+"/"+orderID+"/"+account+"/"+password+"/"+tx_password+"/"+ip+"/"+port, JSONObject.class);
+        JSONObject forObject = restTemplate.getForObject("http://47.104.24.188:82/cancelOrder/"+stock_code+"/"+orderID+"/"+account+"/"+password+"/"+tx_password+"/"+ip+"/"+port, JSONObject.class);
         return forObject;
     }
 
