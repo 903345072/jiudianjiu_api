@@ -21,7 +21,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 @Aspect
 @Component
@@ -52,7 +54,18 @@ public class HeYueApplyAspect {
         int capitial_used_time = HeYueCaculateImpl.cal_capitial_used_time(heyue_id);
         double interest = HeYueCaculateImpl.cal_interest(interest_rate,leverage_money,capitial_used_time);
         double repare_capitical = HeYueCaculateImpl.cal_repare_capitical(deposit,interest);
+        Date date = new Date();
+        SimpleDateFormat formatter  = new SimpleDateFormat("yyyy-MM-dd 14:58:00");
+        String limit_format = formatter.format(date);
 
+        SimpleDateFormat formatter1  = new SimpleDateFormat("yyyy-MM-dd 08:30:00");
+        String limit_format1 = formatter1.format(date);
+
+        SimpleDateFormat formatter_  = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String cur_format = formatter_.format(date);
+        if(limit_format.compareTo(cur_format) <0 || limit_format1.compareTo(cur_format) >0){
+            throw new RuntimeException("此时间段无法申请");
+        }
         //查询余额对比准备资金
         if(member.getAmount().doubleValue() < repare_capitical){
              throw new InsufficientMoneyExceptioin("余额不足");
