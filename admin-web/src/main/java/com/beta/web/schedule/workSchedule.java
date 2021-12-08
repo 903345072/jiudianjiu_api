@@ -145,8 +145,8 @@ public class workSchedule {
     }
 
     public BigDecimal get_sx_fee(BigDecimal hand,BigDecimal buy_price,BigDecimal rate){
-        BigDecimal rate_ = rate.divide(new BigDecimal(1000),5);
-        BigDecimal v = hand.multiply(buy_price).multiply(rate_);
+        BigDecimal rate_ = rate.divide(new BigDecimal(1000));
+        BigDecimal v = hand.multiply(buy_price).multiply(rate_).setScale(2,RoundingMode.HALF_UP);
         if(v.doubleValue() < 5){
             v = new BigDecimal(5);
         }
