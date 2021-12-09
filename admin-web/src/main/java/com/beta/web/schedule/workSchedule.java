@@ -399,6 +399,9 @@ public class workSchedule {
                                 if(s.get("状态说明") == "已撤"){
                                     cc = "委托数量";
                                 }
+                                System.out.println(cc);
+                                System.out.println("--");
+                                System.out.println(s.get(cc));
                                 if( Integer.parseInt((String) s.get(cc)) >0 &&  Double.valueOf((String)s.get(cc)).intValue() !=   Double.valueOf((String)s.get("委托数量")).intValue()){
                                     Integer chengjiao_num =  Double.valueOf((String) s.get("成交数量")).intValue();
                                     BigDecimal weituo_num = new BigDecimal((String) s.get("委托数量"));
