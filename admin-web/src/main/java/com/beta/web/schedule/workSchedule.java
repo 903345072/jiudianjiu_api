@@ -404,7 +404,7 @@ public class workSchedule {
                                     }
                                 }
 
-
+                                System.out.println("cc是"+cc);
                                 if( Double.valueOf((String)s.get(cc)).intValue() >0 &&  Double.valueOf((String)s.get(cc)).intValue() !=   Double.valueOf((String)s.get("委托数量")).intValue()){
                                     Integer chengjiao_num =  Double.valueOf((String) s.get("成交数量")).intValue();
                                     BigDecimal weituo_num = new BigDecimal((String) s.get("委托数量"));
