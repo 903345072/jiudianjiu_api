@@ -147,6 +147,7 @@ public class workSchedule {
     public BigDecimal get_sx_fee(BigDecimal hand,BigDecimal buy_price,BigDecimal rate){
         BigDecimal rate_ = rate.divide(new BigDecimal(1000));
         BigDecimal v = hand.multiply(buy_price).multiply(rate_).setScale(2,RoundingMode.HALF_UP);
+        System.out.println("收学费"+v);
         if(v.doubleValue() < 5){
             v = new BigDecimal(5);
         }
@@ -239,6 +240,7 @@ public class workSchedule {
        int member_id = order.getMember_id();
         Member member = memberService.findMemberById(member_id);
         User userInfo = userService.findUserInfo(member.getInvite_id());
+        System.out.println("费率"+userInfo.getSx_rate());
         BigDecimal sx_fee =  get_sx_fee(new BigDecimal(real_hand),buy_price,userInfo.getSx_rate());
         BigDecimal yh_fee = get_yh_fee(new BigDecimal(real_hand),buy_price);
         map.put("buy_price",buy_price);
