@@ -402,43 +402,46 @@ public class workSchedule {
                                         cc = "委托数量";
                                     }
                                 }
-                                if( Double.valueOf((String)s.get(cc)).intValue() >0 &&  Double.valueOf((String)s.get(cc)).intValue() !=   Double.valueOf((String)s.get("委托数量")).intValue()){
-                                    Integer chengjiao_num =  Double.valueOf((String) s.get("成交数量")).intValue();
-                                    BigDecimal weituo_num = new BigDecimal((String) s.get("委托数量"));
-                                    BigDecimal bucheng_can_weituo = weituo_num.subtract(new BigDecimal(chengjiao_num));
-                                    if(order.getTrade_direction() == 1){  //买退钱
-                                        BigDecimal bank_money = bucheng_can_weituo.multiply(new BigDecimal((String) s.get("委托价格")));
-                                        if(bank_money.doubleValue()>0){
-                                            Map data = new HashMap();
-                                            data.put("amount",bank_money);
-                                            data.put("member_heyue_id",order.getMember_heyue_id());
-                                            memberHeYueApply.increaseHeYueMoney(data);
-                                            com.stock.models.MemberHeYueApply memberHeYue = this.memberHeYueApply.selectHeyueById(order.getMember_heyue_id());
-                                            Map bill = new HashMap();
-                                            bill.put("member_id",order.getMember_id());
-                                            bill.put("link_id",order.getId());
-                                            String str = "订单部分撤回增加";
-                                            bill.put("mark","用户"+order.getMember_id()+str+bank_money.setScale(2,RoundingMode.HALF_UP).toString()+"元");
-                                            bill.put("amount",bank_money);
-                                            bill.put("after_amount",memberHeYue.getTotal_capital());
-                                            bill.put("type", BillCode.CANCLE_ORDER.getCode());
-                                            memberService.addBill(bill);
+                                if(!cc.equals("")){
+                                    if( Double.valueOf((String)s.get(cc)).intValue() >0 &&  Double.valueOf((String)s.get(cc)).intValue() !=   Double.valueOf((String)s.get("委托数量")).intValue()){
+                                        Integer chengjiao_num =  Double.valueOf((String) s.get("成交数量")).intValue();
+                                        BigDecimal weituo_num = new BigDecimal((String) s.get("委托数量"));
+                                        BigDecimal bucheng_can_weituo = weituo_num.subtract(new BigDecimal(chengjiao_num));
+                                        if(order.getTrade_direction() == 1){  //买退钱
+                                            BigDecimal bank_money = bucheng_can_weituo.multiply(new BigDecimal((String) s.get("委托价格")));
+                                            if(bank_money.doubleValue()>0){
+                                                Map data = new HashMap();
+                                                data.put("amount",bank_money);
+                                                data.put("member_heyue_id",order.getMember_heyue_id());
+                                                memberHeYueApply.increaseHeYueMoney(data);
+                                                com.stock.models.MemberHeYueApply memberHeYue = this.memberHeYueApply.selectHeyueById(order.getMember_heyue_id());
+                                                Map bill = new HashMap();
+                                                bill.put("member_id",order.getMember_id());
+                                                bill.put("link_id",order.getId());
+                                                String str = "订单部分撤回增加";
+                                                bill.put("mark","用户"+order.getMember_id()+str+bank_money.setScale(2,RoundingMode.HALF_UP).toString()+"元");
+                                                bill.put("amount",bank_money);
+                                                bill.put("after_amount",memberHeYue.getTotal_capital());
+                                                bill.put("type", BillCode.CANCLE_ORDER.getCode());
+                                                memberService.addBill(bill);
+                                                Map map1 = new HashMap<>();
+                                                map1.put("id",order.getId());
+                                                orderServiceImpl.updateOrderToPart(map1);
+                                            }
+                                        }else{
                                             Map map1 = new HashMap<>();
                                             map1.put("id",order.getId());
                                             orderServiceImpl.updateOrderToPart(map1);
+                                            Map unfreeze_map = new HashMap();
+                                            unfreeze_map.put("id",order.getPid());
+                                            unfreeze_map.put("hand",bucheng_can_weituo);
+                                            orderServiceImpl.unfreeze_hand(unfreeze_map);
                                         }
-                                    }else{
-                                        Map map1 = new HashMap<>();
-                                        map1.put("id",order.getId());
-                                        orderServiceImpl.updateOrderToPart(map1);
-                                        Map unfreeze_map = new HashMap();
-                                        unfreeze_map.put("id",order.getPid());
-                                        unfreeze_map.put("hand",bucheng_can_weituo);
-                                        orderServiceImpl.unfreeze_hand(unfreeze_map);
-                                    }
-                                }else if (Double.valueOf((String)s.get(cc)).intValue()>0 && Double.valueOf((String)s.get(cc)).intValue() ==   Double.valueOf((String)s.get("委托数量")).intValue()){
+                                    }else if (Double.valueOf((String)s.get(cc)).intValue()>0 && Double.valueOf((String)s.get(cc)).intValue() ==   Double.valueOf((String)s.get("委托数量")).intValue()){
                                         updateOrder(order, new BigDecimal((String)s.get("委托价格")),1,new BigDecimal((String) s.get("委托数量")) );
+                                    }
                                 }
+
 
 
                             }
