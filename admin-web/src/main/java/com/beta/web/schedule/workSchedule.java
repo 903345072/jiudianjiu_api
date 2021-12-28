@@ -398,7 +398,7 @@ public class workSchedule {
                                     cc = "撤单数量";
                                 }
                                 if(s.containsKey("状态说明")){
-                                    if(s.get("状态说明").equals("已撤")){
+                                    if(s.get("状态说明").equals("已撤") || s.get("状态说明").equals("部撤")){
                                         cc = "委托数量";
                                     }
                                 }
