@@ -568,7 +568,7 @@ public class workSchedule {
                                             if(s.get("成交编号") == "" || s.get("成交编号") == null){
                                                 return;
                                             }
-                                            if(Double.parseDouble((String) s.get("成交金额"))<=0){
+                                            if(Double.parseDouble((String) s.get(z))<=0){
                                                 return;
                                             }
                                             chengjiao1.setStock_code((String) s.get("证券代码"));
