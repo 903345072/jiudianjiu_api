@@ -68,11 +68,25 @@ public class Order {
                 return RetResponse.makeErRsp("中小板涨跌幅超过+-8%禁止买入");
             }
         }
+        com.stock.models.MemberHeYueApply memberHeYueApply = MemberHeYueApplyImpl.selectHeyueById(order.getMember_heyue_id());
+
         if(substring.equals("sz300")){
             BigDecimal stockRate = SinaStockServiceImpl.setDataSource(order.getStock_code()).getStockRate();
             if(stockRate.doubleValue()< -15 || stockRate.doubleValue()>15){
-                return RetResponse.makeErRsp("创业板涨跌幅超过+-15%禁止买入");
+                return RetResponse.makeErRsp("创业板涨跌幅超过+-12%禁止买入");
             }
+           double price1 = SinaStockServiceImpl.setDataSource(order.getStock_code()).getStockPrice().doubleValue();
+           double zj = price1 * order.getBuy_hand();
+           if(zj >memberHeYueApply.getTotal_capital()*0.5){
+               return RetResponse.makeErRsp("创业板交易金额只能占用总资产50%");
+           }
+            //只能买资金50%
+        }
+        //普通买资金70%
+        double price1 = SinaStockServiceImpl.setDataSource(order.getStock_code()).getStockPrice().doubleValue();
+        double zj = price1 * order.getBuy_hand();
+        if(zj >memberHeYueApply.getTotal_capital()*0.7){
+            return RetResponse.makeErRsp("创业板交易金额只能占用总资产50%");
         }
         Map map = new HashMap<>();
         map.put("heyue_id",order.getMember_heyue_id());
@@ -98,7 +112,6 @@ public class Order {
             }
         }
         //合约是否有效
-        com.stock.models.MemberHeYueApply memberHeYueApply = MemberHeYueApplyImpl.selectHeyueById(order.getMember_heyue_id());
         if(memberHeYueApply.getApply_state() != 1){
             return RetResponse.makeErRsp("此合约已失效");
         }
