@@ -70,6 +70,14 @@ public class Order {
         }
         com.stock.models.MemberHeYueApply memberHeYueApply = MemberHeYueApplyImpl.selectHeyueById(order.getMember_heyue_id());
 
+        List<nettyOrder> activeOrderMoney = memberHeYueApply.getOrder_list();
+        double l = activeOrderMoney.stream().mapToDouble(d->{
+            BigDecimal price = SinaStockServiceImpl.setDataSource(d.getStock_code()).getStockPrice();
+            if(d.getStock_status() == 1){
+                return price.doubleValue() * d.getWeituo_hand();
+            }
+            return price.doubleValue() * d.getBuy_hand();
+        }).sum();
         if(substring.equals("sz300")){
             BigDecimal stockRate = SinaStockServiceImpl.setDataSource(order.getStock_code()).getStockRate();
             if(stockRate.doubleValue()< -15 || stockRate.doubleValue()>15){
@@ -77,7 +85,9 @@ public class Order {
             }
            double price1 = SinaStockServiceImpl.setDataSource(order.getStock_code()).getStockPrice().doubleValue();
            double zj = price1 * order.getBuy_hand();
-           if(zj >memberHeYueApply.getTotal_capital()*0.5){
+
+
+           if(zj >(memberHeYueApply.getTotal_capital()+l)*0.5){
                return RetResponse.makeErRsp("创业板交易金额只能占用总资产50%");
            }
             //只能买资金50%
@@ -85,7 +95,9 @@ public class Order {
         //普通买资金70%
         double price1 = SinaStockServiceImpl.setDataSource(order.getStock_code()).getStockPrice().doubleValue();
         double zj = price1 * order.getBuy_hand();
-        if(zj >memberHeYueApply.getTotal_capital()*0.7){
+
+
+        if(zj >(memberHeYueApply.getTotal_capital()+l)*0.7){
             return RetResponse.makeErRsp("单股交易金额只能占用总资产70%");
         }
         Map map = new HashMap<>();
