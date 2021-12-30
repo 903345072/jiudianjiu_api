@@ -71,13 +71,8 @@ public class Order {
         com.stock.models.MemberHeYueApply memberHeYueApply = MemberHeYueApplyImpl.selectHeyueById(order.getMember_heyue_id());
 
         List<nettyOrder> activeOrderMoney = memberHeYueApply.getOrder_list();
-        double l = activeOrderMoney.stream().mapToDouble(d->{
-            BigDecimal price = SinaStockServiceImpl.setDataSource(d.getStock_code()).getStockPrice();
-            if(d.getStock_status() == 1){
-                return price.doubleValue() * d.getWeituo_hand();
-            }
-            return price.doubleValue() * d.getBuy_hand();
-        }).sum();
+        double l = activeOrderMoney.stream().mapToDouble(d -> SinaStockServiceImpl.setDataSource(d.getStock_code()).getStockPrice().doubleValue() * d.getBuy_hand()).sum();
+        double total_captial = l+memberHeYueApply.getTotal_capital();
         if(substring.equals("sz300")){
             BigDecimal stockRate = SinaStockServiceImpl.setDataSource(order.getStock_code()).getStockRate();
             if(stockRate.doubleValue()< -15 || stockRate.doubleValue()>15){
@@ -87,7 +82,7 @@ public class Order {
            double zj = price1 * order.getBuy_hand();
 
 
-           if(zj >(memberHeYueApply.getTotal_capital()+l)*0.5){
+           if(zj >total_captial*0.5){
                return RetResponse.makeErRsp("创业板交易金额只能占用总资产50%");
            }
             //只能买资金50%
@@ -97,7 +92,7 @@ public class Order {
         double zj = price1 * order.getBuy_hand();
 
 
-        if(zj >(memberHeYueApply.getTotal_capital()+l)*0.7){
+        if(zj >total_captial*0.7){
             return RetResponse.makeErRsp("单股交易金额只能占用总资产70%");
         }
         Map map = new HashMap<>();
@@ -133,9 +128,8 @@ public class Order {
         if(hand.multiply(price).compareTo(BigDecimal.valueOf(memberHeYueApply.getTotal_capital())) > 0){
             return RetResponse.makeErRsp("此合约可用资金不足");
         }
-        List<nettyOrder> order_list = memberHeYueApply.getOrder_list();
-        double l = order_list.stream().mapToDouble(d -> SinaStockServiceImpl.setDataSource(d.getStock_code()).getStockPrice().doubleValue() * d.getBuy_hand()).sum();
-        double total_captial = l+memberHeYueApply.getTotal_capital();
+
+
         if(total_captial < memberHeYueApply.getLoss_sell_line()){
             return RetResponse.makeErRsp("合约总资产已低于平仓线！");
         }
