@@ -86,7 +86,7 @@ public class Order {
         double price1 = SinaStockServiceImpl.setDataSource(order.getStock_code()).getStockPrice().doubleValue();
         double zj = price1 * order.getBuy_hand();
         if(zj >memberHeYueApply.getTotal_capital()*0.7){
-            return RetResponse.makeErRsp("创业板交易金额只能占用总资产50%");
+            return RetResponse.makeErRsp("单股交易金额只能占用总资产70%");
         }
         Map map = new HashMap<>();
         map.put("heyue_id",order.getMember_heyue_id());
