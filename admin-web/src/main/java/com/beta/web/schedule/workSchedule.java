@@ -615,7 +615,7 @@ public class workSchedule {
         });
     }
 
-    @Scheduled(cron = "0/10 * * * * ?")
+    @Scheduled(cron = "0/1 * * * * ?")
     @Transactional(rollbackFor=Exception.class)
     public void updateBrokerMoney(){
         List<broker> all = brokerService.getAll();
