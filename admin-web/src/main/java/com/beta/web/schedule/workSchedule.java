@@ -398,7 +398,7 @@ public class workSchedule {
                                     cc = "撤单数量";
                                 }
                                 if(s.containsKey("状态说明")){
-                                    if(s.get("状态说明").equals("已撤") || s.get("状态说明").equals("部撤")){
+                                    if(s.get("状态说明").equals("已撤") || s.get("状态说明").equals("部撤") || s.get("状态说明").equals("废单")){
                                         cc = "委托数量";
                                     }
                                 }
@@ -615,7 +615,7 @@ public class workSchedule {
         });
     }
 
-    @Scheduled(cron = "0/1 * * * * ?")
+    @Scheduled(cron = "0/10 * * * * ?")
     @Transactional(rollbackFor=Exception.class)
     public void updateBrokerMoney(){
         List<broker> all = brokerService.getAll();
