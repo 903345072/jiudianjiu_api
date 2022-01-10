@@ -77,7 +77,9 @@ public class passHeYueApplyListener1 implements ApplicationListener<PassApplyHeY
         String cur_format = formatter_.format(date);
         //若已经过了两点50,或者今天是节假日，此合约下个交易日生效
         Calendar cal = Calendar.getInstance();
-        if(limit_format.compareTo(cur_format) <0 || !Holiday.is_trade_day(cal)){
+        boolean is_weekend;
+        is_weekend = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
+        if(limit_format.compareTo(cur_format) <0 || is_weekend){
             Map data = new HashMap();
             data.put("apply_state",0);
             data.put("id",(Integer) source.get("link_id"));
