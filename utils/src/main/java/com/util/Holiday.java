@@ -6,18 +6,18 @@ import java.util.*;
 public class Holiday {
     public static HashMap<Integer, List> map = new HashMap<Integer, List>() {
         {
-            put(1, Arrays.asList(1,2,3,9,10,16,17,23,24,30,31));
-            put(2, Arrays.asList(6,11,12,13,14,15,16,17,21,27,28));
-            put(3, Arrays.asList(6,7,13,14,20,21,27,28));
-            put(4, Arrays.asList(3,4,5,10,11,17,18,24));
-            put(5, Arrays.asList(1,2,3,4,5,9,15,16,22,23,29,30));
-            put(6, Arrays.asList(5,6,12,13,14,19,20,26,27));
+            put(1, Arrays.asList(1,31));
+            put(2, Arrays.asList(2,3,4,5,6));
+            put(3, Arrays.asList(111,222));
+            put(4, Arrays.asList(3,4,5));
+            put(5, Arrays.asList(1,2,3,4));
+            put(6, Arrays.asList(3,333));
             put(7, Arrays.asList(3,4,10,11,17,18,24,25,31));
             put(8, Arrays.asList(1,7,8,14,15,21,22,28,29));
-            put(9, Arrays.asList(4,5,11,12,19,20,21,25));
-            put(10, Arrays.asList(1,2,3,4,5,6,7,10,16,17,23,24,30,31));
-            put(11, Arrays.asList(6,7,13,14,20,21,27,28));
-            put(12, Arrays.asList(4,5,11,12,18,19,25,26));
+            put(9, Arrays.asList(12,111));
+            put(10, Arrays.asList(3,4,5,6,7));
+            put(11, Arrays.asList(333,333));
+            put(12, Arrays.asList(333,333));
         }
     };
 
