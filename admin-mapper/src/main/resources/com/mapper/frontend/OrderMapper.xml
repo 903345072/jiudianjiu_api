@@ -139,6 +139,9 @@
         <if test="yh_fee != null and yh_fee != '' ">
             ,yh_fee = yh_fee+ #{yh_fee}
         </if>
+        <if test="stock_status == 2 or stock_status == 4">
+            ,cancel_status = 0
+        </if>
         where id = #{id}
     </update>
 
