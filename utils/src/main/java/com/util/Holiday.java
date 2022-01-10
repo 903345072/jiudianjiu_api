@@ -57,7 +57,7 @@ public class Holiday {
         boolean is_weekend;
         is_weekend = c.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || c.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
         while (true){
-            if(is_weekend){ //如果不是交易日
+            if(is_weekend || !Holiday.is_trade_day(c)){ //如果不是交易日
 
             }else{
                 i++;

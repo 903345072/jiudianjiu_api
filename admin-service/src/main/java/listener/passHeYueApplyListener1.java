@@ -79,7 +79,7 @@ public class passHeYueApplyListener1 implements ApplicationListener<PassApplyHeY
         Calendar cal = Calendar.getInstance();
         boolean is_weekend;
         is_weekend = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
-        if(limit_format.compareTo(cur_format) <0 || is_weekend){
+        if(limit_format.compareTo(cur_format) <0 || is_weekend || !Holiday.is_trade_day(cal)){
             Map data = new HashMap();
             data.put("apply_state",0);
             data.put("id",(Integer) source.get("link_id"));
