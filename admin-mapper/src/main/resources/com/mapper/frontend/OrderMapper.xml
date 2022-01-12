@@ -120,7 +120,11 @@
     </select>
 
     <update id="updateOrderState">
-        update stock_order set stock_status = #{state} where id = #{id}
+        update stock_order set stock_status = #{state}
+        <if test="state == 2 or state == 4">
+            ,cancel_status = 0
+        </if>
+        where id = #{id}
     </update>
     <update id="updateBuyOrderState" parameterType="java.util.Map">
         update stock_order set stock_status = #{stock_status} , buy_hand =  #{buy_hand} ,buy_price = #{buy_price},cancel_status = 0
