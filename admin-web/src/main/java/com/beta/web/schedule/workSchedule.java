@@ -605,7 +605,7 @@ public class workSchedule {
         });
     }
 
-    @Scheduled(cron = "0 1 15 * * ?")
+    @Scheduled(cron = "0 8 16 * * ?")
     @Transactional(rollbackFor=Exception.class)
     public void xuYue(){
         List<com.stock.models.MemberHeYueApply> canEffectHeYue = memberHeYueApply.getValidHeYue();

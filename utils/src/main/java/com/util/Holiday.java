@@ -66,6 +66,8 @@ public class Holiday {
                 break;
             }
             c.add(Calendar.DATE,1);
+            is_weekend = c.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || c.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
+
         }
 
         c.set(Calendar.HOUR_OF_DAY,15);
