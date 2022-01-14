@@ -637,7 +637,7 @@ public class workSchedule {
     }
 
 
-    @Scheduled(cron = "0 0 16 * * ?")
+    @Scheduled(cron = "0 2 18 * * ?")
     //@Scheduled(cron = "0/5 * * * * ?")
     @Transactional(rollbackFor=Exception.class)
     //检测每天委托失败的订单
