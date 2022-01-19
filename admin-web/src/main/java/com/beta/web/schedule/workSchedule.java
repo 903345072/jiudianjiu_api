@@ -61,86 +61,93 @@ public class workSchedule {
     //@Scheduled(cron = "0/5 * * * * ?")
     //@Transactional(rollbackFor=Exception.class)
     public void checkStrategy() throws InterruptedException {
+         Calendar c1 = Calendar.getInstance();
+         c1.set(Calendar.HOUR_OF_DAY,9);
+         c1.set(Calendar.MINUTE,25);
+         c1.set(Calendar.SECOND,0);
+         int i1 = new Date().compareTo(c1.getTime());
+         if(i1>0){
+             List<com.stock.models.MemberHeYueApply> list = memberHeYueApply.selectMemberHeYueByStates();
+             List<Map> chuQuan = brokerService.getChuQuan();
+             List<String> stock_codes = chuQuan.stream().map(d -> (String)d.get("stock_code")).collect(Collectors.toList());
+             list.forEach( s->{//and trade_direction = 1
+                 List<nettyOrder> activeOrderMoney = s.getOrder_list();
+                 double l = activeOrderMoney.stream().mapToDouble(d->{
+                     BigDecimal price = sina.setDataSource(d.getStock_code()).getStockPrice();
+                     if(stock_codes.contains(d.getStock_code())){
+                         price = brokerService.findPriceByCode(d.getStock_code());
+                     }
+                     if(price == null){
+                         return 10000000;
+                     }
+                     if(price.doubleValue()<=0 ){
+                         return 10000000;
+                     }
+                     if(d.getStock_status() == 1){
+                         return price.doubleValue() * d.getWeituo_hand();
+                     }
+                     return price.doubleValue() * d.getBuy_hand();
+                 }).sum();
+                 double total_cap = s.getTotal_capital() + l;
+                 if(total_cap < s.getLoss_sell_line()){
+                     //把持仓中的卖掉,委托买入的撤掉
 
-        List<com.stock.models.MemberHeYueApply> list = memberHeYueApply.selectMemberHeYueByStates();
-         List<Map> chuQuan = brokerService.getChuQuan();
-         List<String> stock_codes = chuQuan.stream().map(d -> (String)d.get("stock_code")).collect(Collectors.toList());
-        list.forEach( s->{//and trade_direction = 1
-            List<nettyOrder> activeOrderMoney = s.getOrder_list();
-            double l = activeOrderMoney.stream().mapToDouble(d->{
-               BigDecimal price = sina.setDataSource(d.getStock_code()).getStockPrice();
-                if(stock_codes.contains(d.getStock_code())){
-                    price = brokerService.findPriceByCode(d.getStock_code());
-                }
-                if(price == null){
-                    return 10000000;
-                }
-                if(price.doubleValue()<=0 ){
-                    return 10000000;
-                }
-                if(d.getStock_status() == 1){
-                    return price.doubleValue() * d.getWeituo_hand();
-                }
-                return price.doubleValue() * d.getBuy_hand();
-            }).sum();
-            double total_cap = s.getTotal_capital() + l;
-            if(total_cap < s.getLoss_sell_line()){
-                //把持仓中的卖掉,委托买入的撤掉
 
+                     Map dd = new HashMap();
+                     dd.put("id",s.getId());
+                     List<nettyOrder> holdOrder = orderServiceImpl.findHoldOrder(dd);
 
-                Map dd = new HashMap();
-                dd.put("id",s.getId());
-                List<nettyOrder> holdOrder = orderServiceImpl.findHoldOrder(dd);
+                     holdOrder.forEach(h->{
+                         try {
+                             if(h.getStock_status() == 2 && h.getPid() == 0){
+                                 //卖
 
-                holdOrder.forEach(h->{
-                    try {
-                        if(h.getStock_status() == 2 && h.getPid() == 0){
-                            //卖
+                                 nettyOrder sellOrder = new nettyOrder();
+                                 Map today_map = new HashMap<>();
+                                 today_map.put("member_heyue_id",h.getMember_heyue_id());
+                                 today_map.put("stock_code",h.getStock_code());
+                                 today_map.put("member_id",h.getMember_id());
+                                 Integer todayHoldCount = orderServiceImpl.findTodayHoldCount(today_map);
+                                 Integer hand = h.getBuy_hand()-todayHoldCount;
+                                 if(hand > 100){
+                                     sellOrder.setBuy_hand(hand);
+                                     sellOrder.setEntrust_way(2);
+                                     sellOrder.setTrade_direction(2);
+                                     sellOrder.setPid(h.getId());
+                                     sellOrder.setMember_heyue_id(h.getMember_heyue_id());
+                                     sellOrder.setStock_code(h.getStock_code());
+                                     sellOrder.setStock_name(h.getStock_name());
+                                     sellOrder.setStock_status(1);
+                                     sellOrder.setCancel_status(0);
+                                     sellOrder.setPing_way(1);
+                                     sellOrder.setMember_id(h.getMember_id());
+                                     BigDecimal stockPrice = sina.setDataSource(h.getStock_code()).getStockPrice();
+                                     sellOrder.setBuy_price(stockPrice.doubleValue());
+                                     sellOrder.setBroker_id(h.getBroker_id());
+                                     orderServiceImpl.makerOrder(sellOrder);
+                                     orderServiceImpl.updateOrderSystem(h.getId());
+                                 }
+                                 Map force = new HashMap();
+                                 force.put("member_heyue_id",s.getId());
+                                 force.put("total_cap_money",s.getTotal_capital());
+                                 force.put("loss_line",s.getLoss_sell_line());
+                                 force.put("market_value",l);
+                                 force.put("total_money",total_cap);
+                                 memberHeYueApply.addForceLog(force);
+                             }else if(h.getStock_status() == 1 && h.getTrade_direction() ==1 && h.getCancel_status() ==0){
+                                 //撤买的
+                                 orderServiceImpl.updateOrderSystem(h.getId());
+                                 orderServiceImpl.apply_cancel(h.getId());
+                             }
+                         }catch (RuntimeException e){
+                             e.printStackTrace();
+                         }
+                     });
+                 }
+                 //根据当前合约下的订单盈亏判断是否能够平仓，或者达到预警线(发送一个预警提示信息)
+             });
+         }
 
-                            nettyOrder sellOrder = new nettyOrder();
-                            Map today_map = new HashMap<>();
-                            today_map.put("member_heyue_id",h.getMember_heyue_id());
-                            today_map.put("stock_code",h.getStock_code());
-                            today_map.put("member_id",h.getMember_id());
-                            Integer todayHoldCount = orderServiceImpl.findTodayHoldCount(today_map);
-                            Integer hand = h.getBuy_hand()-todayHoldCount;
-                            if(hand > 100){
-                                sellOrder.setBuy_hand(hand);
-                                sellOrder.setEntrust_way(2);
-                                sellOrder.setTrade_direction(2);
-                                sellOrder.setPid(h.getId());
-                                sellOrder.setMember_heyue_id(h.getMember_heyue_id());
-                                sellOrder.setStock_code(h.getStock_code());
-                                sellOrder.setStock_name(h.getStock_name());
-                                sellOrder.setStock_status(1);
-                                sellOrder.setCancel_status(0);
-                                sellOrder.setPing_way(1);
-                                sellOrder.setMember_id(h.getMember_id());
-                                BigDecimal stockPrice = sina.setDataSource(h.getStock_code()).getStockPrice();
-                                sellOrder.setBuy_price(stockPrice.doubleValue());
-                                sellOrder.setBroker_id(h.getBroker_id());
-                                orderServiceImpl.makerOrder(sellOrder);
-                                orderServiceImpl.updateOrderSystem(h.getId());
-                            }
-                            Map force = new HashMap();
-                            force.put("member_heyue_id",s.getId());
-                            force.put("total_cap_money",s.getTotal_capital());
-                            force.put("loss_line",s.getLoss_sell_line());
-                            force.put("market_value",l);
-                            force.put("total_money",total_cap);
-                            memberHeYueApply.addForceLog(force);
-                        }else if(h.getStock_status() == 1 && h.getTrade_direction() ==1 && h.getCancel_status() ==0){
-                            //撤买的
-                            orderServiceImpl.updateOrderSystem(h.getId());
-                            orderServiceImpl.apply_cancel(h.getId());
-                        }
-                    }catch (RuntimeException e){
-                        e.printStackTrace();
-                    }
-                });
-            }
-            //根据当前合约下的订单盈亏判断是否能够平仓，或者达到预警线(发送一个预警提示信息)
-        });
         //扫描合约
     }
 
