@@ -41,7 +41,7 @@ public class Member {
     @Autowired
     RechargeService RechargeServiceImpl;
     @Autowired
-    @Qualifier("sina")
+    @Qualifier("wwyy")
     StockDataServiceAbstract sina;
 
     @RequestMapping("/getMemberInterestList")

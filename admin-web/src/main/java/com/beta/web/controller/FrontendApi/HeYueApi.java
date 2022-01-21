@@ -31,7 +31,7 @@ public class HeYueApi {
     @Qualifier("HeYueCaculateAdper")
     HeYueCaculateAdpterInterface HeYueCaculateImpl;
     @Autowired
-    @Qualifier("sina")
+    @Qualifier("wwyy")
     StockDataServiceAbstract sina;
     @Autowired
     OrderService orderService;

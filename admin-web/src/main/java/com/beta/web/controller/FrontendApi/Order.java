@@ -27,7 +27,7 @@ public class Order {
 
 
     @Autowired
-    @Qualifier("sina")
+    @Qualifier("wwyy")
     StockDataServiceAbstract SinaStockServiceImpl;
 
     @Autowired

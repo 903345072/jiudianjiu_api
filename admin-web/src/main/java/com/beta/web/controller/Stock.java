@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/stock")
 public class Stock {
 
-    @Qualifier("sina")
+    @Qualifier("wwyy")
     @Autowired
     StockDataServiceAbstract SinaStockServiceImpl;
     @Autowired

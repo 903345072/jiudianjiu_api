@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
     private RedisTemplate redisTemplate_;
     @Resource
     private ApplicationEventPublisher applicationEventPublisher;
-    @Qualifier("sina")
+    @Qualifier("wwyy")
     @Autowired
     StockDataServiceAbstract SinaStockServiceImpl;
 
