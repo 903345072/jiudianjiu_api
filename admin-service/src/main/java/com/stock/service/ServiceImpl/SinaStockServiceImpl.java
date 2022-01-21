@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
-@Qualifier("wwyy")
+@Qualifier("sina")
 public class SinaStockServiceImpl extends StockDataServiceAbstract {
 
     private String price_url = "http://hq.sinajs.cn/list=s_";
